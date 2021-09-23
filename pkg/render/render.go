@@ -5,27 +5,48 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/moaabb/go-web-dev/pkg/config"
+	"github.com/moaabb/go-web-dev/pkg/models"
 )
 
 var functions = template.FuncMap{}
 
+var app *config.AppConfig
+
+// NewTemplates sets the config for the template package
+func NewTemplates(a *config.AppConfig) {
+	app = a
+}
+
 // renderTemplate renders a html page
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	tc, err := renderTemplateCache()
-	if err != nil {
-		log.Fatal(err)
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+	var tc map[string]*template.Template
+
+	if app.UseCache {
+		tc = app.TemplateCache
+	} else {
+		t, err := CreateTemplateCache()
+		if err != nil {
+			log.Fatal(err)
+		}
+		tc = t
 	}
 
-	parsedTemplate := tc[tmpl]
+	parsedTemplate, ok := tc[tmpl]
+	if !ok {
+		log.Fatal("Could not load template")
+	}
 	// parsedTemplate, _ := template.ParseFiles("./templates/" + tmpl)
-	err = parsedTemplate.Execute(w, nil)
+	err := parsedTemplate.Execute(w, td)
 	if err != nil {
 		log.Println("error parsing template", err)
 		return
 	}
 }
 
-func RenderTemplateCache() (map[string]*template.Template, error) {
+// CreateTemplateCache parses all the templates available and caches then
+func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
 	pages, err := filepath.Glob("./templates/*.page.tmpl")
