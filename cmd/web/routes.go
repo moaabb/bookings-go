@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/go-chi/chi/v5"
-	"github.com/moaabb/go-web-dev/pkg/handlers"
+	"github.com/moaabb/bookings-go/pkg/handlers"
 )
 
 func routes() *chi.Mux {

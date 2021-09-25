@@ -3,9 +3,9 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/moaabb/go-web-dev/pkg/config"
-	"github.com/moaabb/go-web-dev/pkg/models"
-	"github.com/moaabb/go-web-dev/pkg/render"
+	"github.com/moaabb/bookings-go/pkg/config"
+	"github.com/moaabb/bookings-go/pkg/models"
+	"github.com/moaabb/bookings-go/pkg/render"
 )
 
 type Repository struct {
