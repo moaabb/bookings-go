@@ -28,17 +28,22 @@ func NewHandlers(r *Repository) {
 
 // Home handles the home page
 func (m *Repository) Home(w http.ResponseWriter, req *http.Request) {
-	StringMap := make(map[string]string)
 
-	StringMap["test"] = "Olá de novo"
+	m.App.Session.Put(req.Context(), "remote_ip", req.RemoteAddr)
 
-	render.RenderTemplate(w, "index.page.tmpl", &models.TemplateData{
-		StringMap: StringMap,
-	})
+	render.RenderTemplate(w, "index.page.tmpl", &models.TemplateData{})
 
 }
 
 // Aboute handles the about page
 func (m *Repository) About(w http.ResponseWriter, req *http.Request) {
-	render.RenderTemplate(w, "about.page.tmpl", nil)
+
+	StringMap := make(map[string]string)
+
+	StringMap["remote_ip"] = m.App.Session.GetString(req.Context(), "remote_ip")
+
+	StringMap["test"] = "Olá de novo"
+	render.RenderTemplate(w, "about.page.tmpl", &models.TemplateData{
+		StringMap: StringMap,
+	})
 }

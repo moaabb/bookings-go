@@ -5,10 +5,13 @@
         <div class="row">
             <div class="col">
                 <h1>This is the about page</h1>
-                <p> Lorem Ipsum </p>
-                <p> Lorem Ipsum </p>
-                <p> Lorem Ipsum </p>
-                <p> Lorem Ipsum </p>
+                {{if ne (index .StringMap "remote_ip") "" }}
+                    <p> Your remote ip add is {{index .StringMap "remote_ip"}} </p>
+
+                {{ else }}
+                    <p> I don't have your remote ip yet. Access <a href="/">Home</a> and then come back </p>
+
+                {{end}}
             </div>
         </div>
     </div>
