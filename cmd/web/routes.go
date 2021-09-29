@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/moaabb/bookings-go/pkg/handlers"
+	"github.com/moaabb/bookings-go/internal/handlers"
 )
 
 // routes manages the website routes
@@ -17,6 +17,11 @@ func routes() *chi.Mux {
 	mux.Use(SessionLoad)
 	mux.Get("/", handlers.Repo.Home)
 	mux.Get("/about", handlers.Repo.About)
+	mux.Get("/contact", handlers.Repo.Contact)
+	mux.Get("/make-reservation", handlers.Repo.MakeReservation)
+	mux.Get("/search-availability", handlers.Repo.SearchAvailability)
+	mux.Get("/rooms/generals", handlers.Repo.Generals)
+	mux.Get("/rooms/majors", handlers.Repo.Majors)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
 	fmt.Println(fileServer)

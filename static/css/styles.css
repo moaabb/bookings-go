@@ -32,7 +32,3 @@
 div.datepicker.datepicker-dropdown {
     z-index: 10000;
 }
-
-#reservation-dates-modal {
-    overflow-x: hidden;
-}

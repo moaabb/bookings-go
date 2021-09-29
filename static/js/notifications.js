@@ -1,28 +1,29 @@
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        // Fetch all the forms we want to apply custom Bootstrap validation styles to
+        let forms = document.getElementsByClassName('needs-validation');
+        // Loop over them and prevent submission
+        Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('click', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+
+function notify(msgType, msg) {
+    notie.alert({
+        type: msgType,
+        text: msg,
+    })
+}
+
 let attention = Prompt();
-
-
-document.getElementById("botao").addEventListener("click", function () {
-    let html = `
-    <form id="check-availability-form" action="" method="post" novalidate class="needs-validation">
-        <div class="row">
-            <div class="col">
-                <div class="row" id="reservation-dates-modal">
-                    <div class="col">
-                        <input autocomplete="off" disabled required class="form-control" type="text" name="start" id="start" placeholder="Arrival">
-                    </div>
-                    <div class="col">
-                        <input autocomplete="off" disabled required class="form-control" type="text" name="end" id="end" placeholder="Departure">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-    `;
-    attention.custom({
-        title: 'Choose your dates',
-        msg: html,
-    });
-})
 
 function notify(msg, msgType) {
     notie.alert({

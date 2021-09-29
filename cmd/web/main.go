@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/alexedwards/scs/v2"
-	"github.com/moaabb/bookings-go/pkg/config"
-	"github.com/moaabb/bookings-go/pkg/handlers"
-	"github.com/moaabb/bookings-go/pkg/render"
+	"github.com/moaabb/bookings-go/internal/config"
+	"github.com/moaabb/bookings-go/internal/handlers"
+	"github.com/moaabb/bookings-go/internal/render"
 )
 
 var app config.AppConfig

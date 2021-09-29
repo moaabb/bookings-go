@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/moaabb/bookings-go/pkg/config"
-	"github.com/moaabb/bookings-go/pkg/models"
+	"github.com/moaabb/bookings-go/internal/config"
+	"github.com/moaabb/bookings-go/internal/models"
 )
 
 var functions = template.FuncMap{}
