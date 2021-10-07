@@ -7,7 +7,7 @@
         <div class="col">
             <h1 class="mt-3 text-center">Search for Availability</h1>
 
-            <form action="" method="get" novalidate class="needs-validation mt-4">
+            <form action="/search-availability" method="POST" novalidate class="needs-validation mt-4">
                 <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
                 <div class="row">
                   <div class="col">
@@ -41,13 +41,30 @@
 {{define "js"}}
 
 <script>
-	
+    const form = document.querySelector("form")
+
+
+    form.addEventListener('submit', e => {
+      e.preventDefault()
+      const formData = new FormData(form)
+
+      fetch("/search-availability", {
+        method: "POST",
+        body: formData
+      })
+        .then(result => result.json())
+        .then(data => notify(data.message, data.type))
+
+
+    })
+
     const elem = document.getElementById('date-picker');
     const rangepicker = new DateRangePicker(elem, {
         format: "dd-mm-yyyy",
         minDate: Date.now()
   });
 </script>
+
 
 
 {{end}}

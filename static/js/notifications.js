@@ -1,11 +1,13 @@
-(function() {
+let attention = Prompt();
+
+(function () {
     'use strict';
-    window.addEventListener('load', function() {
+    window.addEventListener('load', function () {
         // Fetch all the forms we want to apply custom Bootstrap validation styles to
         let forms = document.getElementsByClassName('needs-validation');
         // Loop over them and prevent submission
-        Array.prototype.filter.call(forms, function(form) {
-            form.addEventListener('click', function(event) {
+        Array.prototype.filter.call(forms, function (form) {
+            form.addEventListener('submit', function (event) {
                 if (form.checkValidity() === false) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -16,14 +18,6 @@
     }, false);
 })();
 
-function notify(msgType, msg) {
-    notie.alert({
-        type: msgType,
-        text: msg,
-    })
-}
-
-let attention = Prompt();
 
 function notify(msg, msgType) {
     notie.alert({
@@ -105,23 +99,21 @@ function Prompt() {
             title = "",
         } = c;
 
-        const { value: formValues } = await Swal.fire({
+        const { value: result } = await Swal.fire({
             title: title,
             html: msg,
             backdrop: false,
             focusConfirm: false,
             showCancelButton: true,
             willOpen: () => {
-                const elem = document.getElementById("reservation-dates-modal");
-                const rp = new DateRangePicker(elem, {
-                    format: 'yyyy-mm-dd',
-                    showOnFocus: true,
-                    minDate: Date.now()
-                })
+                if (c.willOpen !== undefined) {
+                    c.willOpen();
+                }
             },
             didOpen: () => {
-                document.getElementById("start").removeAttribute("disabled");
-                document.getElementById("end").removeAttribute("disabled");
+                if (c.didOpen !== undefined){
+                    c.didOpen();
+                }
             },
             preConfirm: () => {
                 return [
@@ -131,8 +123,18 @@ function Prompt() {
             }
         })
 
-        if (formValues) {
-            Swal.fire(JSON.stringify(formValues))
+        if (result) {
+            if (result.dismiss !== Swal.DismissReason.cancel) {
+                if (result.value !== "") {
+                    if (c.callback !== undefined) {
+                        c.callback(result);
+                    }
+                } else {
+                    c.callback(false);
+                }
+            } else {
+                c.callback(false);
+            }
         }
     }
 

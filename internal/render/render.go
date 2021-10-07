@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/justinas/nosurf"
 	"github.com/moaabb/bookings-go/internal/config"
 	"github.com/moaabb/bookings-go/internal/models"
 )
@@ -19,8 +20,18 @@ func NewTemplates(a *config.AppConfig) {
 	app = a
 }
 
+// AddDefaultData adds data for all templates
+func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateData {
+	td.Flash = app.Session.PopString(r.Context(), "Flash")
+	td.Error = app.Session.PopString(r.Context(), "Error")
+	td.Warning = app.Session.PopString(r.Context(), "Warning")
+	td.CSRFToken = nosurf.Token(r)
+
+	return td
+}
+
 // renderTemplate renders a html page
-func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -32,6 +43,9 @@ func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData)
 		}
 		tc = t
 	}
+
+	// Add fedault data
+	td = AddDefaultData(td, r)
 
 	parsedTemplate, ok := tc[tmpl]
 	if !ok {

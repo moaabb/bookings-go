@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,6 +10,7 @@ import (
 	"github.com/alexedwards/scs/v2"
 	"github.com/moaabb/bookings-go/internal/config"
 	"github.com/moaabb/bookings-go/internal/handlers"
+	"github.com/moaabb/bookings-go/internal/models"
 	"github.com/moaabb/bookings-go/internal/render"
 )
 
@@ -18,6 +20,19 @@ var session *scs.SessionManager
 const portNumber = ":8080"
 
 func main() {
+
+	// running the server config
+	run()
+
+	fmt.Println(fmt.Sprintf("Starting application on port %s", portNumber))
+
+	_ = http.ListenAndServe(portNumber, routes())
+
+}
+
+func run() {
+	// Register data type for sessions
+	gob.Register(models.Reservation{})
 
 	// handling the session
 	session = scs.New()
@@ -42,9 +57,5 @@ func main() {
 	handlers.NewHandlers(repo)
 
 	render.NewTemplates(&app)
-
-	fmt.Println(fmt.Sprintf("Starting application on port %s", portNumber))
-
-	_ = http.ListenAndServe(portNumber, routes())
 
 }
