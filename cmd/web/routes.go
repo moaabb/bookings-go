@@ -5,11 +5,12 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/moaabb/bookings-go/internal/config"
 	"github.com/moaabb/bookings-go/internal/handlers"
 )
 
 // routes manages the website routes
-func routes() *chi.Mux {
+func routes(a *config.AppConfig) http.Handler {
 	mux := chi.NewRouter()
 
 	mux.Use(traceUrl)

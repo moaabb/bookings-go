@@ -1,6 +1,8 @@
 package render
 
 import (
+	"errors"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -10,6 +12,8 @@ import (
 	"github.com/moaabb/bookings-go/internal/config"
 	"github.com/moaabb/bookings-go/internal/models"
 )
+
+var pathToTemplates = "./templates"
 
 var functions = template.FuncMap{}
 
@@ -31,7 +35,7 @@ func AddDefaultData(td *models.TemplateData, r *http.Request) *models.TemplateDa
 }
 
 // renderTemplate renders a html page
-func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) {
+func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *models.TemplateData) error {
 	var tc map[string]*template.Template
 
 	if app.UseCache {
@@ -49,21 +53,24 @@ func RenderTemplate(w http.ResponseWriter, r *http.Request, tmpl string, td *mod
 
 	parsedTemplate, ok := tc[tmpl]
 	if !ok {
-		log.Fatal("Could not load template")
+		log.Println("Could not load template from cache")
+		return errors.New("Could not load template from cache")
 	}
-	// parsedTemplate, _ := template.ParseFiles("./templates/" + tmpl)
+
 	err := parsedTemplate.Execute(w, td)
 	if err != nil {
 		log.Println("error parsing template", err)
-		return
+		return err
 	}
+
+	return nil
 }
 
 // CreateTemplateCache parses all the templates available and caches then
 func CreateTemplateCache() (map[string]*template.Template, error) {
 	myCache := map[string]*template.Template{}
 
-	pages, err := filepath.Glob("./templates/*.page.tmpl")
+	pages, err := filepath.Glob(fmt.Sprintf("%s/*.page.tmpl", pathToTemplates))
 	if err != nil {
 		log.Println(err)
 	}
@@ -76,13 +83,13 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 			return myCache, err
 		}
 
-		matches, err := filepath.Glob("./templates/*.layout.tmpl")
+		matches, err := filepath.Glob(fmt.Sprintf("%s/*.layout.tmpl", pathToTemplates))
 		if err != nil {
 			return myCache, err
 		}
 
 		if len(matches) > 0 {
-			ts, err = ts.ParseGlob("./templates/*.layout.tmpl")
+			ts, err = ts.ParseGlob(fmt.Sprintf("%s/*.layout.tmpl", pathToTemplates))
 			if err != nil {
 				return myCache, err
 			}

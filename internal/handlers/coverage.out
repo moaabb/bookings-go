@@ -1,0 +1,22 @@
+mode: set
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:22.47,26.2 1 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:29.33,31.2 1 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:34.67,40.2 2 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:43.68,53.2 4 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:56.70,58.2 1 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:61.81,63.2 1 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:66.71,68.2 1 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:71.69,73.2 1 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:76.78,85.2 4 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:88.78,90.16 2 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:95.2,108.19 6 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:118.2,119.66 2 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:90.16,93.3 2 0
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:108.19,117.3 4 0
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:130.79,137.2 4 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:140.79,149.16 3 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:153.2,155.14 3 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:149.16,151.3 1 0
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:158.81,161.9 3 1
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:168.2,173.4 3 0
+github.com/moaabb/bookings-go/internal/handlers/handlers.go:161.9,166.3 4 1

@@ -1,0 +1,19 @@
+mode: set
+github.com/moaabb/bookings-go/internal/forms/errors.go:6.44,8.2 1 1
+github.com/moaabb/bookings-go/internal/forms/errors.go:11.50,13.18 2 1
+github.com/moaabb/bookings-go/internal/forms/errors.go:16.2,16.20 1 1
+github.com/moaabb/bookings-go/internal/forms/errors.go:13.18,15.3 1 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:19.29,21.2 1 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:24.33,29.2 1 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:32.43,33.31 1 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:33.31,35.37 2 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:35.37,37.4 1 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:42.56,45.13 3 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:48.2,48.13 1 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:45.13,47.3 1 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:52.74,54.21 2 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:58.2,58.13 1 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:54.21,57.3 2 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:62.43,63.40 1 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:68.2,68.13 1 1
+github.com/moaabb/bookings-go/internal/forms/forms.go:63.40,66.3 2 1

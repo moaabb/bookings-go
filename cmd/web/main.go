@@ -5,34 +5,47 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/moaabb/bookings-go/internal/config"
 	"github.com/moaabb/bookings-go/internal/handlers"
+	"github.com/moaabb/bookings-go/internal/helpers"
 	"github.com/moaabb/bookings-go/internal/models"
 	"github.com/moaabb/bookings-go/internal/render"
 )
 
 var app config.AppConfig
 var session *scs.SessionManager
+var infoLog *log.Logger
+var errorLog *log.Logger
 
 const portNumber = ":8080"
 
 func main() {
 
 	// running the server config
-	run()
+	err := run()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println(fmt.Sprintf("Starting application on port %s", portNumber))
 
-	_ = http.ListenAndServe(portNumber, routes())
+	_ = http.ListenAndServe(portNumber, routes(&app))
 
 }
 
-func run() {
+func run() error {
 	// Register data type for sessions
 	gob.Register(models.Reservation{})
+
+	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	app.InfoLog = infoLog
+
+	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	app.ErrorLog = errorLog
 
 	// handling the session
 	session = scs.New()
@@ -54,8 +67,10 @@ func run() {
 	app.UseCache = false
 
 	repo := handlers.NewRepo(&app)
+	helpers.NewHelpers(&app)
+	render.NewTemplates(&app)
 	handlers.NewHandlers(repo)
 
-	render.NewTemplates(&app)
+	return nil
 
 }
