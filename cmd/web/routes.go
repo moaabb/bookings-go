@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -34,7 +33,6 @@ func routes(a *config.AppConfig) http.Handler {
 	mux.Get("/rooms/majors", handlers.Repo.Majors)
 
 	fileServer := http.FileServer(http.Dir("./static/"))
-	fmt.Println(fileServer)
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	return mux

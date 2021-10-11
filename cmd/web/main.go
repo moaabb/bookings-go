@@ -10,6 +10,7 @@ import (
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/moaabb/bookings-go/internal/config"
+	"github.com/moaabb/bookings-go/internal/driver"
 	"github.com/moaabb/bookings-go/internal/handlers"
 	"github.com/moaabb/bookings-go/internal/helpers"
 	"github.com/moaabb/bookings-go/internal/models"
@@ -26,10 +27,11 @@ const portNumber = ":8080"
 func main() {
 
 	// running the server config
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.SQL.Close()
 
 	fmt.Println(fmt.Sprintf("Starting application on port %s", portNumber))
 
@@ -37,7 +39,7 @@ func main() {
 
 }
 
-func run() error {
+func run() (*driver.DB, error) {
 	// Register data type for sessions
 	gob.Register(models.Reservation{})
 
@@ -58,6 +60,15 @@ func run() error {
 	app.InProduction = false
 	app.Session = session
 
+	// connect to db
+	log.Println("Connecting to Database...")
+	db, err := driver.ConnectSQL("postgres://moab:example@localhost:8000/bookings")
+	if err != nil {
+		log.Fatal(fmt.Sprintf("Cannot connect to database! Dying...\tERROR: %s", err))
+	}
+
+	log.Println("Connected to Database!")
+
 	// Creating the template cache
 	tc, err := render.CreateTemplateCache()
 	if err != nil {
@@ -66,11 +77,11 @@ func run() error {
 	app.TemplateCache = tc
 	app.UseCache = false
 
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
 	helpers.NewHelpers(&app)
-	render.NewTemplates(&app)
+	render.NewRenderer(&app)
 	handlers.NewHandlers(repo)
 
-	return nil
+	return db, nil
 
 }
