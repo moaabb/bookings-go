@@ -41,26 +41,33 @@
 {{define "js"}}
 
 <script>
-    const form = document.querySelector("form")
+    // const form = document.querySelector("form")
 
 
-    form.addEventListener('submit', e => {
-      e.preventDefault()
-      const formData = new FormData(form)
+    // form.addEventListener('submit', e => {
+    //   e.preventDefault()
+    //   const formData = new FormData(form)
 
-      fetch("/search-availability", {
-        method: "POST",
-        body: formData
-      })
-        .then(result => result.json())
-        .then(data => notify(data.message, data.type))
+    //   fetch("/search-availability", {
+    //     method: "POST",
+    //     body: formData
 
-
-    })
+    //   }).then(data => {
+    //     data.json()
+    //   })
+    //   .then(result => {
+    //     if (result.type === "error") {
+    //       form.reset()
+    //       notify(result.msg, result.type)
+    //     } else {
+    //       console.log(result.msg)
+    //     }
+    //   })
+    // })
 
     const elem = document.getElementById('date-picker');
     const rangepicker = new DateRangePicker(elem, {
-        format: "dd-mm-yyyy",
+        format: "yyyy-mm-dd",
         minDate: Date.now()
   });
 </script>
