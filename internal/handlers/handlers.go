@@ -245,8 +245,8 @@ func (m *Repository) ReservationSummary(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	sd := res.StartDate.Format("2006-01-02")
-	ed := res.EndDate.Format("2006-01-02")
+	sd := res.StartDate.Format("Mon, Jan 02, 2006")
+	ed := res.EndDate.Format("Mon, Jan 02, 2006")
 
 	stringMap := make(map[string]string)
 	stringMap["start_date"] = sd
