@@ -4,4 +4,4 @@ create_table("restrictions") {
 }
 
 sql("INSERT INTO restrictions (restriction_name, created_at, updated_at) VALUES ('Reservation', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-    INSERT INTO restrictions (restriction_name, created_at, updated_at) VALUES ('Owner Out', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);")
+    INSERT INTO restrictions (restriction_name, created_at, updated_at) VALUES ('Owner Block', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);")
