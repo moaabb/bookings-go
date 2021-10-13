@@ -160,10 +160,11 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 }
 
 type jsonResponse struct {
-	OK       bool   `json:"ok"`
-	Message  string `json:"msg"`
-	Tipo     string `json:"type"`
-	Redirect string `json:"redirect"`
+	OK        bool   `json:"ok"`
+	Message   string `json:"msg"`
+	StartDate string `json:"start_date"`
+	EndDate   string `json:"end_date"`
+	RoomID    int    `json:"room_id"`
 }
 
 // PostAvailability handles room availability form
@@ -219,18 +220,47 @@ func (m *Repository) PostAvailability(w http.ResponseWriter, r *http.Request) {
 // AvailabilityJSON
 func (m *Repository) AvailabilityJSON(w http.ResponseWriter, r *http.Request) {
 
-	resp := jsonResponse{
-		OK:      true,
-		Message: "Unavailable!",
-		Tipo:    "error",
-	}
+	sd := r.Form.Get("start")
+	ed := r.Form.Get("end")
+	layout := "2006-01-02"
 
-	out, err := json.Marshal(resp)
+	startDate, err := time.Parse(layout, sd)
 	if err != nil {
 		helpers.ServerError(w, err)
+		return
+	}
+	endDate, err := time.Parse(layout, ed)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
 	}
 
-	fmt.Println(r.Form.Get("start"), r.Form.Get("end"))
+	room_id, err := strconv.Atoi(r.Form.Get("room_id"))
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	available, err := m.DB.SearchAvailabilityByDatesByRoomID(startDate, endDate, room_id)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	resp := jsonResponse{
+		OK:        available,
+		Message:   "",
+		RoomID:    room_id,
+		StartDate: sd,
+		EndDate:   ed,
+	}
+
+	out, err := json.Marshal(&resp)
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(out)
 }
@@ -288,4 +318,8 @@ func (m *Repository) ChooseRoom(w http.ResponseWriter, r *http.Request) {
 	m.App.Session.Put(r.Context(), "reservation", res)
 	http.Redirect(w, r, "/make-reservation", http.StatusSeeOther)
 
+}
+
+func (m *Repository) NotFound(w http.ResponseWriter, r *http.Request) {
+	render.Template(w, r, "404.page.tmpl", &models.TemplateData{})
 }

@@ -37,5 +37,7 @@ func routes(a *config.AppConfig) http.Handler {
 	fileServer := http.FileServer(http.Dir("./static/"))
 	mux.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
+	mux.NotFound(handlers.Repo.NotFound)
+
 	return mux
 }
