@@ -70,3 +70,49 @@ func (m *testingDBRepo) Authenticate(email, testPassword string) (int, string, e
 
 	return id, hashedPassword, nil
 }
+
+// AllReservations Returns all the reservations
+func (m *testingDBRepo) AllReservations() ([]models.Reservation, error) {
+	var reservations []models.Reservation
+
+	return reservations, nil
+}
+
+// AllNewReservations Returns All the reservations not yet processed
+func (m *testingDBRepo) AllNewReservations() ([]models.Reservation, error) {
+	var reservations []models.Reservation
+
+	return reservations, nil
+}
+
+// GetReservationByID Returns the reservation with the given ID
+func (m *testingDBRepo) GetReservationByID(id int) (models.Reservation, error) {
+	var reservation models.Reservation
+
+	return reservation, nil
+}
+
+// UpdateReservation updates a reservation in the database
+func (m *testingDBRepo) UpdateReservation(r models.Reservation) error {
+
+	return nil
+}
+
+// DeleteReservation Deletes a reservation from the database
+func (m *testingDBRepo) DeleteReservation(id int) error {
+
+	return nil
+}
+
+// UpdateProcessedForReservation Updates processed status for a reservation by id
+func (m *testingDBRepo) UpdateProcessedForReservation(id, processed int) error {
+
+	return nil
+}
+
+// AllRooms Returns All the rooms
+func (m *testingDBRepo) AllRooms() ([]models.Room, error) {
+	var rooms []models.Room
+
+	return rooms, nil
+}

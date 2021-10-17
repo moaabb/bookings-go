@@ -1,0 +1,52 @@
+{{template "admin" .}}
+
+{{define "page-title"}}
+    Reservation Calendar
+{{end}}
+
+{{define "content"}}
+
+    {{$rooms := index .Data "rooms"}}
+    {{$dim := index .IntMap "days_of_month"}}
+    {{$date := index .StringMap}}
+    <div class="col-md-12">
+        <div class="text-center">
+            <h3>{{$date.this_month}} {{$date.this_month_year}}</h3>
+        </div>
+
+        <div class="float-left">
+            <a href="/admin/reservation-calendar?y={{$date.last_month_year}}&m={{$date.last_month}}" class="btn btn-sm btn-outline-secondary">&lt;&lt;</a>
+        </div>
+
+        <div class="float-right">
+            <a href="/admin/reservation-calendar?y={{$date.next_month_year}}&m={{$date.next_month}}" class="btn btn-sm btn-outline-secondary">&gt;&gt;</a>
+        </div>
+
+        <div class="clearfix"></div>
+
+        {{range $rooms}}
+            {{$roomID := .ID}}
+
+            <h4 class="mt-4">{{.RoomName}}</h4>
+            <div class="table-response">
+                <table class="table table-sm table-bordered">
+                    <tr class="table-dark">
+                        {{range $index := iterate $dim}}
+                            <td class="text-center">
+                                {{.}}
+                            </td>
+                        {{end}}
+                    </tr>
+                    <tr>
+                        {{range $index := iterate $dim}}
+                            <td class="text-center">
+                                <input type="checkbox">
+                            </td>
+                        {{end}}
+                    </tr>
+                </table>
+            </div>
+        {{end}}
+    </div>
+
+{{end}}

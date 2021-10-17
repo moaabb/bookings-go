@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/justinas/nosurf"
 	"github.com/moaabb/bookings-go/internal/config"
@@ -15,7 +16,25 @@ import (
 
 var pathToTemplates = "./templates"
 
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"humanDate": HumanDate,
+	"iterate":   Iterate,
+}
+
+// HumanDate Returns the date in YYYY-MM-DD format
+func HumanDate(t time.Time) string {
+	return t.Format("2006-01-02")
+}
+
+// Iterates over a number
+func Iterate(count int) []int {
+	var items []int
+	for i := 1; i <= count; i++ {
+		items = append(items, i)
+	}
+
+	return items
+}
 
 var app *config.AppConfig
 
