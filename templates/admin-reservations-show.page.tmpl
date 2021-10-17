@@ -62,7 +62,11 @@
                 <hr>
                 <div class="float-left">
                     <input type="submit" class="btn btn-primary" value="Save">
-                    <a href="/admin/reservations-{{$src}}" class="btn btn-warning">Cancel</a>
+                    {{if eq $src "cal"}}
+                         <a href="#!" class="btn btn-warning" onclick="window.history.go(-1)">Cancel</a>
+                    {{else}}
+                        <a href="/admin/reservations-{{$src}}" class="btn btn-warning">Cancel</a>
+                    {{end}}
                     {{if eq $res.Processed 0}}
                         <a href="#!" class="btn btn-info" onclick="processRes({{$res.ID}})">Mark as Processed</a>
                     {{end}}
@@ -86,7 +90,7 @@
                 msg: "Are you sure you wanna mark as processed?",
                 callback: function(result) {
                     if (result !== false) {
-                        window.location.href = "/admin/process-reservation/{{$src}}/" + id
+                            window.location.href = "/admin/process-reservation/{{$src}}/" + id
                     }
                 }
             })
@@ -98,7 +102,7 @@
                 msg: "Are you sure you wanna delete?",
                 callback: function(result) {
                     if (result !== false) {
-                        window.location.href = "/admin/delete-reservation/{{$src}}/" + id
+                            window.location.href = "/admin/process-reservation/{{$src}}/" + id
                     }
                 }
             })

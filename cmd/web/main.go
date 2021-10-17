@@ -43,6 +43,7 @@ func run() (*driver.DB, error) {
 	// Register data type for sessions
 	gob.Register(models.Reservation{})
 	gob.Register(models.Room{})
+	gob.Register(map[string]int{})
 
 	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	app.InfoLog = infoLog

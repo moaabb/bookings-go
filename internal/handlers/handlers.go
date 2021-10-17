@@ -511,7 +511,7 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 	stringMap["last_month"] = lastMonth
 	stringMap["last_month_year"] = lastMonthYear
 
-	stringMap["this_month"] = now.Format("January")
+	stringMap["this_month"] = now.Format("01")
 	stringMap["this_month_year"] = now.Format("2006")
 
 	currentYear, currentMonth, _ := now.Date()
@@ -532,6 +532,46 @@ func (m *Repository) AdminReservationsCalendar(w http.ResponseWriter, r *http.Re
 
 	data := make(map[string]interface{})
 	data["rooms"] = rooms
+	data["now"] = now
+
+	for _, x := range rooms {
+		// create maps
+		reservationMap := make(map[string]int)
+		blockMap := make(map[string]int)
+
+		for d := firstOfMonth; d.After(lastOfMonth) == false; d = d.AddDate(0, 0, 1) {
+			reservationMap[d.Format("2006-01-2")] = 0
+			blockMap[d.Format("2006-01-2")] = 0
+
+		}
+
+		// get all restrictions for the current room
+		restrictions, err := m.DB.GetRstrictionsForRoomByDate(x.ID, firstOfMonth, lastOfMonth)
+		if err != nil {
+			helpers.ServerError(w, err)
+			return
+		}
+
+		for _, y := range restrictions {
+			if y.ReservationID > 0 {
+				// It's a reservation
+				for d := y.StartDate; d.After(y.EndDate) == false; d = d.AddDate(0, 0, 1) {
+					reservationMap[d.Format("2006-01-2")] = y.ReservationID
+
+				}
+			} else {
+				// it's a block
+				blockMap[y.StartDate.Format("2006-01-2")] = y.ID
+			}
+		}
+		data[fmt.Sprintf("reservation_map_%d", x.ID)] = reservationMap
+		data[fmt.Sprintf("block_map_%d", x.ID)] = blockMap
+		m.App.Session.Put(r.Context(), fmt.Sprintf("block_map_%d", x.ID), blockMap)
+
+	}
+
+	// fmt.Println(data["block_map_1"])
+	// fmt.Println(data["block_map_2"])
 
 	render.Template(w, r, "admin-reservations-calendar.page.tmpl", &models.TemplateData{
 		StringMap: stringMap,
@@ -645,4 +685,63 @@ func (m *Repository) AdminDeleteReservation(w http.ResponseWriter, r *http.Reque
 
 	m.App.Session.Put(r.Context(), "flash", "Reservation Deleted")
 	http.Redirect(w, r, fmt.Sprintf("/admin/reservations-%s", src), http.StatusSeeOther)
+}
+
+// AdminPostReservationsCalendar Posts the changes of the reservation calendar
+func (m *Repository) AdminPostReservationsCalendar(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	year := r.Form.Get("y")
+	month := r.Form.Get("m")
+
+	// process blocks
+	rooms, err := m.DB.AllRooms()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	form := forms.New(r.PostForm)
+
+	for _, x := range rooms {
+
+		curMap := m.App.Session.Get(r.Context(), fmt.Sprintf("block_map_%d", x.ID)).(map[string]int)
+		for name, value := range curMap {
+			if val, ok := curMap[name]; ok {
+				if val > 0 {
+					if !form.Has(fmt.Sprintf("remove_block_%d_%s", x.ID, name)) {
+						err := m.DB.DeleteRoomBlock(value)
+						if err != nil {
+							helpers.ServerError(w, err)
+							return
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// handle new blocks
+	for name, _ := range r.PostForm {
+		if strings.HasPrefix(name, "add_block") {
+			exploded := strings.Split(name, "_")
+			roomID, _ := strconv.Atoi(exploded[2])
+			start, _ := time.Parse("2006-01-2", exploded[3])
+
+			// insert new block
+			err := m.DB.InsertRoomBlock(roomID, start)
+			if err != nil {
+				helpers.ServerError(w, err)
+				return
+			}
+		}
+	}
+
+	m.App.Session.Put(r.Context(), "flash", "Changes Saved")
+
+	http.Redirect(w, r, fmt.Sprintf("/admin/reservation-calendar?y=%s&m=%s", year, month), http.StatusSeeOther)
 }

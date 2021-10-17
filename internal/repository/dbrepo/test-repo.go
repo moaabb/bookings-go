@@ -116,3 +116,23 @@ func (m *testingDBRepo) AllRooms() ([]models.Room, error) {
 
 	return rooms, nil
 }
+
+// GetRstrictionsForRoomByDate Return all the restrictions for the given room
+func (m *testingDBRepo) GetRstrictionsForRoomByDate(roomID int, start, end time.Time) ([]models.RoomRestriction, error) {
+
+	var restrictions []models.RoomRestriction
+
+	return restrictions, nil
+}
+
+// InsertRoomBlock Inserts Owner block for the room for the given date
+func (m *testingDBRepo) InsertRoomBlock(roomID int, startDate time.Time) error {
+
+	return nil
+}
+
+// DeleteRoomBlock Deletes Owner block for the room for the given date
+func (m *testingDBRepo) DeleteRoomBlock(id int) error {
+
+	return nil
+}

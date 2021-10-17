@@ -42,4 +42,11 @@ type DatabaseRepo interface {
 
 	// AllRooms Returns All the rooms
 	AllRooms() ([]models.Room, error)
+
+	// GetRstrictionsForRoomByDate Return all the restrictions for the given room
+	GetRstrictionsForRoomByDate(roomID int, start, end time.Time) ([]models.RoomRestriction, error)
+	// InsertRoomBlock Inserts Owner block for the room for the given date
+	InsertRoomBlock(roomID int, startDate time.Time) error
+	// DeleteRoomBlock Deletes Owner block for the room for the given date
+	DeleteRoomBlock(id int) error
 }

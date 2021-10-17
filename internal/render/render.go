@@ -19,6 +19,13 @@ var pathToTemplates = "./templates"
 var functions = template.FuncMap{
 	"humanDate": HumanDate,
 	"iterate":   Iterate,
+	"nameMonth": NameMonth,
+}
+
+func NameMonth(t time.Time) string {
+	x := t.Format("January")
+
+	return x
 }
 
 // HumanDate Returns the date in YYYY-MM-DD format

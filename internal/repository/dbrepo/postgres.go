@@ -504,3 +504,88 @@ func (m *postgresDBRepo) AllRooms() ([]models.Room, error) {
 
 	return rooms, nil
 }
+
+// GetRstrictionsForRoomByDate Return all the restrictions for the given room
+func (m *postgresDBRepo) GetRstrictionsForRoomByDate(roomID int, start, end time.Time) ([]models.RoomRestriction, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var restrictions []models.RoomRestriction
+
+	query := `
+		SELECT id, start_date, end_date, room_id, COALESCE(reservation_id, 0), restriction_id
+		FROM room_restrictions
+		WHERE start_date >= $1 AND $2 >= end_date AND room_id = $3
+	`
+	rows, err := m.DB.QueryContext(ctx, query, start, end, roomID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var r models.RoomRestriction
+		err = rows.Scan(
+			&r.ID,
+			&r.StartDate,
+			&r.EndDate,
+			&r.RoomID,
+			&r.ReservationID,
+			&r.RestrictionID,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		restrictions = append(restrictions, r)
+	}
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return restrictions, nil
+}
+
+// InsertRoomBlock Inserts Owner block for the room for the given date
+func (m *postgresDBRepo) InsertRoomBlock(roomID int, startDate time.Time) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+		INSERT INTO room_restrictions
+		(start_date, end_date, room_id, restriction_id, created_at, updated_at)
+		VALUES
+		($1, $2, $3, $4, $5, $6)
+	`
+
+	_, err := m.DB.ExecContext(ctx, query,
+		startDate,
+		startDate.AddDate(0, 0, 1),
+		roomID,
+		2,
+		time.Now(),
+		time.Now(),
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteRoomBlock Deletes Owner block for the room for the given date
+func (m *postgresDBRepo) DeleteRoomBlock(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `
+		DELETE FROM room_restrictions WHERE id = $1
+	`
+
+	_, err := m.DB.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
